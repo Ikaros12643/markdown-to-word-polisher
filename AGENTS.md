@@ -89,6 +89,22 @@ powershell.exe -ExecutionPolicy Bypass -File .\scripts\Publish-SkillRelease.ps1 
 
 运行时脚本必须兼容 PowerShell 5.1，因为后期抛光流程仍依赖 Windows PowerShell 和 Word COM。示例和脚本中的路径应尽量使用相对路径。C# 代码使用可空引用类型、隐式 `using`、类型和方法采用 PascalCase，局部变量采用 camelCase。JSON 配置键应保持小写或 camelCase，以匹配现有 `style-map.json` 的风格。
 
+### C# 编码规范
+
+- 按职责组织文件：CLI、Markdown 到 Word、Word 到 Markdown、共享模型和工具应分目录放置；一个核心类优先对应一个 `.cs` 文件，避免重新形成巨大的单文件实现。
+- 类型、方法、属性使用 PascalCase；局部变量和参数使用 camelCase；私有字段使用 `_camelCase`。
+- 普通方法应尽量保持短小；当方法里出现多个明显步骤、较长的 OpenXML 构造过程，或同时处理多种节点类型时，优先拆成有明确名字的私有方法。
+- 转换规则应放在对应模块中：Markdown 解析与 AST 转换放在 `MarkdownToWord`，Word 读取与 Markdown 输出放在 `WordToMarkdown`，样式映射和共享数据结构放在 `Shared`。
+
+### 注释规范
+
+- 公共边界优先写 XML 文档注释：对 `public` 类型、方法，以及未来可能被其他项目复用的 `internal` 类型，可使用 `/// <summary>` 说明用途、输入输出和关键限制。
+- 私有方法不强制写注释；只有当代码意图无法从方法名和结构直接读出时才补充说明。
+- 注释主要解释“为什么”和“约束”，少解释代码已经表达清楚的“做什么”。例如应说明 Word/OpenXML 的特殊行为、样式名兼容策略、公式或表格转换的取舍。
+- 避免空泛注释，例如 `// 遍历段落`、`// 创建对象`、`// 返回结果`。如果注释不能帮助后续维护者避开坑，就不要写。
+- 对 OpenXML、Word COM、样式映射、复杂表格、公式转换等容易踩坑的逻辑，应在关键位置留下简短注释，说明原因和不可随意改动的条件。
+- 注释语言优先使用中文，除非代码上下文、库 API 或异常信息本身使用英文更清晰。
+
 ## 测试指南
 
 目前尚无正式测试套件。修改 `to-docx` 后，应使用 `examples/demo.md` 以及至少一份真实文档进行验证，真实文档应包含标题、列表、表格、图片、行内格式和数学块。确认生成的 `.docx` 能在 Microsoft Word 中打开，并且不会出现修复提示。
