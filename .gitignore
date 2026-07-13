@@ -1,0 +1,13 @@
+/bin
+src/**/bin
+obj/
+out/
+*.user
+*.suo
+*.tmp
+*.exe
+
+.venv
+/examples
+
+resources

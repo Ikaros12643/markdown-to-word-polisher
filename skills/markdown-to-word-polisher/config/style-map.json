@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "blockStyles": {
+    "heading.1": "标题 1",
+    "heading.2": "标题 2",
+    "heading.3": "标题 3",
+    "heading.4": "标题 4",
+    "heading.5": "标题 5",
+    "heading.6": "标题 6",
+    "paragraph": "正文2",
+    "blockquote": "引用",
+    "code_block": "代码",
+    "table": "表格文本",
+    "unordered_list": "列表段落",
+    "ordered_list": "有序列表段落",
+    "math_block": "公式"
+  },
+  "tableStyles": {
+    "table": "Merit"
+  },
+  "inlineStyles": {
+    "inline_code": "行内代码",
+    "math_inline": "公式"
+  }
+}

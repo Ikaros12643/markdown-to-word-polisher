@@ -1,0 +1,7 @@
+interface:
+  display_name: "Markdown to Word Polisher"
+  short_description: "Markdown 转 Word 与图表题注后处理"
+  default_prompt: "Use $markdown-to-word-polisher to convert a Markdown file into a styled Word document."
+
+policy:
+  allow_implicit_invocation: true
