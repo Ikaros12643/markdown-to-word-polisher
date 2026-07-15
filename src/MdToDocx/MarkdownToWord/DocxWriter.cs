@@ -106,7 +106,7 @@ internal static class DocxWriter
                 }
                 break;
             case "code_block":
-                parent.Append(CreateTextParagraph(block.Text ?? string.Empty, context.Styles.Block("code_block", "Normal"), preserveWhitespace: true));
+                parent.Append(CreateCodeBlockParagraph(block.Text ?? string.Empty, context.Styles.Block("code_block", "Normal")));
                 break;
             case "thematic_break":
                 parent.Append(CreateTextParagraph("----------------------------------------", context.Styles.Block("paragraph", "Normal")));
@@ -229,6 +229,31 @@ internal static class DocxWriter
         var paragraph = new Paragraph();
         ApplyParagraphStyle(paragraph, styleId);
         paragraph.Append(CreateRun(text, preserveWhitespace: preserveWhitespace));
+        return paragraph;
+    }
+
+    private static Paragraph CreateCodeBlockParagraph(string text, string styleId)
+    {
+        var paragraph = new Paragraph();
+        ApplyParagraphStyle(paragraph, styleId);
+
+        // Word 不会把 w:t 内的 \n 稳定渲染为换行，代码块需要显式写入 w:br。
+        var normalizedText = text.Replace("\r\n", "\n").Replace('\r', '\n');
+        if (normalizedText.EndsWith('\n'))
+        {
+            normalizedText = normalizedText[..^1];
+        }
+
+        var lines = normalizedText.Split('\n');
+        for (var i = 0; i < lines.Length; i++)
+        {
+            paragraph.Append(CreateRun(lines[i], preserveWhitespace: true));
+            if (i < lines.Length - 1)
+            {
+                paragraph.Append(new Run(new Break()));
+            }
+        }
+
         return paragraph;
     }
 
